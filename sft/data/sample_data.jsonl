@@ -1,0 +1,5 @@
+{"instruction": "What is the capital of France?", "input": "", "output": "The capital of France is Paris."}
+{"instruction": "Calculate the sum of 15 and 27.", "input": "", "output": "The sum of 15 and 27 is 42."}
+{"instruction": "Explain the concept of machine learning.", "input": "", "output": "Machine learning is a subset of artificial intelligence that enables computers to learn and make decisions from data without being explicitly programmed for every task."}
+{"instruction": "Solve this math problem:", "input": "If a train travels 120 km in 2 hours, what is its average speed?", "output": "The average speed is 120 km ÷ 2 hours = 60 km/h."}
+{"instruction": "What is the largest planet in our solar system?", "input": "", "output": "Jupiter is the largest planet in our solar system."}

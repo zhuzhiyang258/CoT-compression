@@ -5,6 +5,7 @@
 """
 
 import pandas as pd
+import csv
 from typing import List, Dict, Tuple, Optional
 
 class DataLoader:
@@ -86,7 +87,7 @@ class DataLoader:
             包含system和user字段的字典
         """
         if system_prompt is None:
-            system_prompt = "Think step by step, but only keep a minimum draft for each thinking step, with 5 words at most. Return the answer at the end of the response after a separator ####."
+            system_prompt = "Think step by step, but only keep a minimum draft for each thinking step, with 5 words at most. Return the answer at the end ofthe response after a separator ####."
         
         return {
             "system": system_prompt,
@@ -112,16 +113,27 @@ class DataLoader:
         
         return prompts
     
-    def save_results(self, results: List[Tuple[int, int, str]], output_path: str) -> None:
+    def save_results(self, results: List[Tuple[int, int, int, str]], output_path: str) -> None:
         """
         保存模型推理结果到CSV文件。
         
         参数:
-            results: 结果列表，每个元素为(id, sample_id, output)的元组
+            results: 结果列表，每个元素为(total_id, question_id, sample_id, output)的元组
             output_path: 输出文件路径
         """
-        output_df = pd.DataFrame(results, columns=['id', 'sample_id', 'output'])
-        output_df.to_csv(output_path, sep='\t', index=False, header=False)
+        # 输出格式：(总编号, 问题编号, 样本编号, 模型原始输出)
+        # 无需表头，使用"\t"作为分隔符
+        # 将换行符和制表符转换为空格，确保文本在一个单元格中
+        formatted_results = []
+        for total_id, question_id, sample_id, output in results:
+            # 清理输出文本，将换行符和制表符替换为空格
+            cleaned_output = output.replace('\n', ' ').replace('\t', ' ').replace('\r', ' ')
+            # 去除多余空格
+            cleaned_output = ' '.join(cleaned_output.split())
+            formatted_results.append((total_id, question_id, sample_id, cleaned_output))
+        
+        output_df = pd.DataFrame(formatted_results, columns=['total_id', 'question_id', 'sample_id', 'output'])
+        output_df.to_csv(output_path, sep='\t', index=False, header=False, quoting=csv.QUOTE_NONE, escapechar='\\')
         print(f"结果已保存到 {output_path}")
 
 

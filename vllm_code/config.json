@@ -1,0 +1,91 @@
+{
+    "system_prompts": {
+        "baseline": "Think step by step, but only keep a minimum draft for each thinking step, with 5 words at most. Return the answer at the end of the response after a separator ####.",
+        
+        "smart_reasoning": "你是金融会计专家。采用Chain of Draft方法：先草稿，后答案。\n\n【草稿规则】\n每个思维步骤写简洁草稿，每步最多5个词，只保留关键信息：计算结果、中间结论、关键判断。\n\n【推理结构】\n草稿1：题型识别（如：长投权益法）\n草稿2：关键数据（如：持股30%，净利600万）\n草稿3：计算方法（如：600×30%=180万）\n草稿4：验证结果（如：符合选项B,ps可能为单选也可能为多选，多选则用逗号分开）\n草稿5：确定答案（如：选择B,选择题答案可能是单选也可能是多选。）\n\n####\n最终答案：$\\boxed{答案}$",
+        
+        "error_correction": "金融会计专家，采用Chain of Draft+纠错机制。\n\n【草稿规则】每步最多5词，包含验证。\n\n草稿1：识别题型\n草稿2：提取数据\n草稿3：选择方法计算\n草稿4：验证是否合理\n草稿5：检查选项匹配\n草稿6：如有错误重算\n草稿7：确定最终答案\n\n####\n$\\boxed{答案}$",
+        
+        "practical": "实战金融会计专家，Chain of Draft快速模式。\n\n【关键词草稿法】\n看到关键词→立即草稿→直接计算\n\n草稿1：关键词识别（同一控制下/权益法等）\n草稿2：核心数据（金额比例时间）\n草稿3：直接公式（避免绕弯）\n草稿4：计算结果（保留数字）\n草稿5：选项对比（选最接近）\n\n####\n$\\boxed{答案}$",
+        
+        "multi_round": "金融会计专家，多轮Chain of Draft验证。\n\n【第一轮草稿】每步5词\n草稿1：题型\n草稿2：数据\n草稿3：计算\n\n【第二轮验证】每步5词\n草稿4：检查合理性\n草稿5：核对选项\n\n【第三轮决策】\n草稿6：确定答案\n\n####\n$\\boxed{答案}$",
+        
+        "category_guided": "金融会计专家，分类Chain of Draft。\n\n【按题型草稿】每步5词\n\n长投题：草稿1控制关系→草稿2核算方法→草稿3计算收益\n固资题：草稿1计量模式→草稿2折旧方法→草稿3账面价值\n金融题：草稿1工具分类→草稿2计量选择→草稿3损益计算\n税务题：草稿1税种识别→草稿2计税基础→草稿3应纳税额\n\n####\n$\\boxed{答案}$",
+        
+        "efficient": "金融会计专家，基础Chain of Draft。\n\n【5步草稿法】每步最多5词\n\n草稿1：题型识别\n草稿2：数据提取\n草稿3：公式计算\n草稿4：结果验证\n草稿5：答案确定\n\n####\n$\\boxed{答案}$",
+        
+        "default": "smart_reasoning"
+    },
+    
+    "inference_settings": {
+        "max_new_tokens": 4096,
+        "temperature": 0.5,
+        "top_p": 0.9,
+        "presence_penalty": 1.5,
+        "repetition_penalty": 1.05,
+        "num_samples": 5
+    },
+    
+    "concurrent_settings": {
+        "max_concurrent": 20,
+        "timeout": 180
+    },
+    
+    "prompt_descriptions": {
+        "smart_reasoning": "【推荐】Chain of Draft标准版本，5步草稿法+纠错机制，先草稿后答案",
+        "error_correction": "Chain of Draft+强化纠错，7步验证草稿，适合计算复杂题目",
+        "practical": "Chain of Draft快速版本，关键词草稿法，适合标准会计题目",
+        "multi_round": "多轮Chain of Draft验证，6步草稿分三轮，适合重要考试",
+        "category_guided": "分类Chain of Draft，按题型定制草稿策略，适合专业培训",
+        "efficient": "基础Chain of Draft，标准5步草稿流程，适合快速测试",
+        "baseline": "原始英文基线版本，用于对比Chain of Draft效果"
+    },
+    
+    "optimization_notes": {
+        "key_improvements": [
+            "实现Chain of Draft方法：先草稿，后答案（Draft First, Answer Later）",
+            "严格限制草稿长度：每步最多5个词，保留关键信息",
+            "使用####分隔符分离思维过程和最终答案",
+            "保持推理结构：虽然简洁但确保推理完整性",
+            "中文适配：针对金融会计领域优化草稿内容"
+        ],
+        "recommended_usage": {
+            "primary": "smart_reasoning",
+            "alternative": "error_correction", 
+            "testing": "baseline"
+        },
+        "parameter_optimization": {
+            "max_new_tokens": "从8192降至3072，给足够推理空间",
+            "temperature": "从0.5降至0.2，提高一致性",
+            "top_p": "保持0.9，维持适当多样性",
+            "presence_penalty": "1.5，减少重复内容生成",
+            "repetition_penalty": "1.05，轻微惩罚重复词汇"
+        }
+    },
+    
+    "quality_metrics": {
+        "format_compliance": "检查$\\boxed{}$格式正确率",
+        "reasoning_completeness": "检查<think></think>标签完整性",
+        "answer_accuracy": "验证答案选择正确性",
+        "logical_consistency": "评估推理逻辑合理性"
+    },
+    
+    "common_issues": {
+        "format_errors": {
+            "problem": "答案格式不正确",
+            "solution": "使用smart_reasoning或error_correction版本"
+        },
+        "incomplete_reasoning": {
+            "problem": "推理过程不完整",
+            "solution": "检查<think>标签，使用multi_round版本"
+        },
+        "calculation_errors": {
+            "problem": "计算结果错误",
+            "solution": "使用error_correction版本，启用验证机制"
+        },
+        "language_mismatch": {
+            "problem": "中英文题目处理不当",
+            "solution": "避免使用baseline版本，选择中文优化版本"
+        }
+    }
+}

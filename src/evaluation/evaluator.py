@@ -66,16 +66,22 @@ class Evaluator:
         返回:
             提取的答案
         """
+        # 尝试使用\\boxed{答案}格式提取答案（新格式）
+        boxed_pattern = r'\\boxed\{([^}]+)\}'
+        boxed_match = re.search(boxed_pattern, output)
+        if boxed_match:
+            return boxed_match.group(1).strip()
+        
+        # 尝试使用$\\boxed{答案}$格式提取答案（旧格式）
+        boxed_pattern_old = r'\$\\boxed\{(.*?)\}\$'
+        boxed_match_old = re.search(boxed_pattern_old, output)
+        if boxed_match_old:
+            return boxed_match_old.group(1).strip()
+        
         # 尝试使用####分隔符提取答案
         if "####" in output:
             answer = output.split("####")[-1].strip()
             return answer
-        
-        # 尝试使用$\\boxed{答案}$格式提取答案
-        boxed_pattern = r'\$\\boxed\{(.*?)\}\$'
-        boxed_match = re.search(boxed_pattern, output)
-        if boxed_match:
-            return boxed_match.group(1).strip()
         
         # 尝试使用最后一行作为答案
         lines = output.strip().split('\n')

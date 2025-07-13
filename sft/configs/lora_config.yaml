@@ -1,0 +1,81 @@
+# LoRA Fine-tuning Configuration for Qwen3-4B-Chat
+
+# Model Configuration
+model_name_or_path: "./models/Qwen3-4B-Chat"
+model_revision: null
+torch_dtype: "bfloat16"
+attn_implementation: "flash_attention_2"
+
+# LoRA Configuration
+use_lora: true
+lora_target_modules:
+  - "q_proj"
+  - "k_proj" 
+  - "v_proj"
+  - "o_proj"
+  - "gate_proj"
+  - "up_proj"
+  - "down_proj"
+lora_rank: 64
+lora_alpha: 128
+lora_dropout: 0.05
+
+# Dataset Configuration
+dataset_name: null
+dataset_dir: "./sft/data"
+template: "qwen"
+cutoff_len: 4096
+preprocessing_num_workers: 16
+
+# Training Arguments
+output_dir: "./sft/output"
+overwrite_output_dir: true
+do_train: true
+do_eval: false
+do_predict: false
+
+# Training Hyperparameters
+num_train_epochs: 3
+per_device_train_batch_size: 2
+per_device_eval_batch_size: 2
+gradient_accumulation_steps: 8
+learning_rate: 5.0e-5
+weight_decay: 0.01
+lr_scheduler_type: "cosine"
+warmup_ratio: 0.03
+fp16: false
+bf16: true
+
+# Optimization
+gradient_checkpointing: true
+dataloader_pin_memory: true
+remove_unused_columns: false
+optim: "adamw_torch"
+group_by_length: true
+
+# Logging and Evaluation
+logging_steps: 10
+save_strategy: "epoch"
+save_steps: 500
+evaluation_strategy: "no"
+save_total_limit: 3
+seed: 42
+
+# Generation Config (for inference)
+do_sample: true
+temperature: 0.3
+top_p: 0.9
+top_k: 50
+max_new_tokens: 1024
+
+# System Optimization
+dataloader_num_workers: 4
+report_to: []
+ddp_timeout: 180000000
+include_num_input_tokens_seen: true
+
+# LoRA Specific Settings
+lora_bias: "none"
+use_rslora: false
+use_dora: false
+pissa_init: false

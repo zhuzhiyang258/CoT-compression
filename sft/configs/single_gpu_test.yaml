@@ -1,0 +1,84 @@
+# Single GPU Test Configuration for Qwen3-4B-Chat
+
+# Model Configuration
+model_name_or_path: "./models/Qwen3-4B-Chat"
+model_revision: null
+torch_dtype: "bfloat16"
+attn_implementation: "eager"
+
+# LoRA Configuration
+use_lora: true
+lora_target_modules:
+  - "q_proj"
+  - "k_proj" 
+  - "v_proj"
+  - "o_proj"
+  - "gate_proj"
+  - "up_proj"
+  - "down_proj"
+lora_rank: 32  # Reduced for faster testing
+lora_alpha: 64  # Reduced proportionally
+lora_dropout: 0.05
+
+# Dataset Configuration
+dataset_name: null
+dataset_dir: "./sft/data"
+template: "qwen"
+cutoff_len: 1024  # Reduced for faster testing
+preprocessing_num_workers: 8
+
+# Training Arguments
+output_dir: "./sft/test_output"
+overwrite_output_dir: true
+do_train: true
+do_eval: false
+do_predict: false
+
+# Training Hyperparameters - Optimized for quick testing
+num_train_epochs: 1  # Just 1 epoch for testing
+per_device_train_batch_size: 1  # Small batch for testing
+per_device_eval_batch_size: 1
+gradient_accumulation_steps: 2  # Small accumulation
+learning_rate: 1.0e-4  # Slightly higher for faster convergence
+weight_decay: 0.01
+lr_scheduler_type: "cosine"
+warmup_ratio: 0.1  # Shorter warmup
+fp16: false
+bf16: true
+
+# Optimization
+gradient_checkpointing: false
+dataloader_pin_memory: true
+remove_unused_columns: false
+optim: "adamw_torch"
+group_by_length: false  # Disable for simplicity
+
+# Logging and Evaluation - More frequent for testing
+logging_steps: 1  # Log every step
+save_strategy: "steps"
+save_steps: 5  # Save every 5 steps
+evaluation_strategy: "no"
+save_total_limit: 2  # Keep only 2 checkpoints
+seed: 42
+
+# Generation Config (for inference)
+do_sample: true
+temperature: 0.3
+top_p: 0.9
+top_k: 50
+max_new_tokens: 512
+
+# System Optimization
+dataloader_num_workers: 2  # Reduced workers
+report_to: []
+ddp_timeout: 180000000
+include_num_input_tokens_seen: true
+
+# LoRA Specific Settings
+lora_bias: "none"
+use_rslora: false
+use_dora: false
+pissa_init: false
+
+# Additional settings for single GPU
+max_steps: 10  # Limit to 10 steps for quick test
