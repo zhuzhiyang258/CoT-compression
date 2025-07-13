@@ -7,10 +7,15 @@ This directory contains scripts and configurations for fine-tuning the Qwen3-4B-
 ```
 sft/
 ├── configs/
-│   └── lora_config.yaml          # LoRA training configuration
+│   ├── lora_config.yaml         # LoRA training configuration
+│   └── single_gpu_test.yaml     # Single GPU test configuration
 ├── scripts/
 │   ├── train_lora.py            # Main training script
 │   ├── start_training.sh        # Training startup script
+│   ├── test_single_gpu.sh       # Single GPU test script
+│   ├── merge_lora.py            # LoRA weight merge script
+│   ├── merge_lora.sh            # Merge startup script
+│   ├── quick_merge.py           # Quick merge utility
 │   └── prepare_data.py          # Data preparation utility
 ├── data/                        # Training data directory
 └── output/                      # Model output directory
@@ -158,11 +163,77 @@ bash sft/scripts/start_training.sh
 - Enable `group_by_length` for efficient batching
 - Adjust `dataloader_num_workers` based on CPU cores
 
+## LoRA Weight Merging
+
+After training, you can merge LoRA adapters with the base model to create a standalone fine-tuned model.
+
+### Quick Merge (Recommended)
+
+```bash
+# Quick merge using the test LoRA adapters
+uv run python sft/scripts/quick_merge.py sft/test_output/lora_adapters -o ./merged_model
+
+# Or merge your own trained adapters
+uv run python sft/scripts/quick_merge.py ./sft/output/lora_adapters -o ./my_merged_model
+```
+
+### Full Merge with Validation
+
+```bash
+# Complete merge with model validation
+bash sft/scripts/merge_lora.sh \
+    ./models/Qwen3-4B-Chat \
+    ./sft/output/lora_adapters \
+    ./sft/merged_model \
+    bfloat16 \
+    true
+
+# Or use the Python script directly
+uv run python sft/scripts/merge_lora.py \
+    --base_model ./models/Qwen3-4B-Chat \
+    --lora_adapter ./sft/output/lora_adapters \
+    --output_dir ./sft/merged_model \
+    --validate \
+    --test_prompt "请介绍一下你的功能"
+```
+
+### Using Merged Model
+
+Once merged, you can use the model like any standard transformers model:
+
+```python
+from transformers import AutoTokenizer, AutoModelForCausalLM
+import torch
+
+# Load merged model
+tokenizer = AutoTokenizer.from_pretrained('./sft/merged_model', trust_remote_code=True)
+model = AutoModelForCausalLM.from_pretrained(
+    './sft/merged_model', 
+    torch_dtype=torch.bfloat16, 
+    device_map="auto",
+    trust_remote_code=True
+)
+
+# Use for inference
+inputs = tokenizer("你好，请介绍一下自己", return_tensors="pt")
+outputs = model.generate(**inputs, max_new_tokens=100, temperature=0.7)
+response = tokenizer.decode(outputs[0], skip_special_tokens=True)
+print(response)
+```
+
+### Deploy with vLLM
+
+```bash
+# Start vLLM server with merged model
+vllm serve ./sft/merged_model --port 8000 --gpu-memory-utilization 0.8
+```
+
 ## Output
 
 After training completion:
 - Model checkpoints: `./sft/output/`
 - LoRA adapters: `./sft/output/lora_adapters/`
+- Merged models: `./sft/merged_model/` (after merging)
 - Training logs: Console output and tensorboard logs (if enabled)
 
-The LoRA adapters can be loaded separately for inference without the full model weights.
+The LoRA adapters can be loaded separately for inference or merged with the base model for standalone deployment.

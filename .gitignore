@@ -177,6 +177,7 @@ vllm-env/
 *.tmp
 *.temp
 *~
+._____temp/
 
 # OS specific
 .DS_Store
@@ -191,3 +192,100 @@ Thumbs.db
 instraction
 models/
 CLAUDE.md
+
+# Model and training related files
+# Pretrained models
+models/
+*.safetensors
+*.bin
+*.pt
+*.pth
+*.ckpt
+*.h5
+
+# Model configuration files that are large
+model.safetensors.index.json
+
+# Training outputs
+sft/output/
+sft/test_output/
+sft/merged_model/
+sft/quick_merged_model/
+sft/full_merged_model/
+*/checkpoints/
+*/checkpoint-*/
+*/lora_adapters/
+*_merged/
+*_merged_model/
+
+# HuggingFace cache
+.cache/
+~/.cache/huggingface/
+.huggingface/
+
+# Weights and Biases
+wandb/
+
+# TensorBoard logs
+runs/
+logs/
+tensorboard/
+
+# Training artifacts
+*.safetensors
+adapter_*.json
+adapter_model.*
+trainer_state.json
+training_args.bin
+optimizer.pt
+scheduler.pt
+rng_state.pth
+pytorch_model.bin
+
+# Large tokenizer files (only in model directories)
+models/*/tokenizer.json
+models/*/vocab.json
+models/*/merges.txt
+sft/*/tokenizer.json
+sft/*/vocab.json
+sft/*/merges.txt
+
+# Chat templates and other large model files
+models/*/chat_template.jinja
+sft/*/chat_template.jinja
+*.jinja
+*.jinja2
+
+# Model index files
+model.safetensors.index.json
+pytorch_model.bin.index.json
+
+# Model evaluation results
+results_*/
+eval_results/
+predictions/
+
+# VLLM cache and logs
+vllm.log
+*.vllm_cache
+
+# GPU profiling
+*.nvprof
+*.prof
+
+# Additional large files
+# Any file over typical size limits
+*.pickle
+*.pkl
+*.npy
+*.npz
+
+# Backup model files
+*.bak
+*_backup/
+backup_*/
+
+# Downloaded model caches
+.cache/transformers/
+.cache/torch/
+downloads/
