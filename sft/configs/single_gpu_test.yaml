@@ -28,7 +28,7 @@ cutoff_len: 1024  # Reduced for faster testing
 preprocessing_num_workers: 8
 
 # Training Arguments
-output_dir: "./sft/test_output"
+output_dir: "./sft/outputs/training/test_run"
 overwrite_output_dir: true
 do_train: true
 do_eval: false

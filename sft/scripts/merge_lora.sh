@@ -10,8 +10,8 @@ echo "============================================"
 
 # 默认参数
 DEFAULT_BASE_MODEL="./models/Qwen3-4B-Chat"
-DEFAULT_LORA_ADAPTER="./sft/test_output/lora_adapters"
-DEFAULT_OUTPUT_DIR="./sft/merged_model"
+DEFAULT_LORA_ADAPTER="./sft/outputs/training/test_run/lora_adapters"
+DEFAULT_OUTPUT_DIR="./sft/outputs/merged_models/default"
 DEFAULT_TORCH_DTYPE="bfloat16"
 
 # 解析命令行参数

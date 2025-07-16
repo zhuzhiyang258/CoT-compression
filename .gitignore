@@ -206,12 +206,17 @@ models/
 # Model configuration files that are large
 model.safetensors.index.json
 
-# Training outputs
+# Training outputs - NEW UNIFIED STRUCTURE
+sft/outputs/
+# Legacy output directories (to be cleaned up)
 sft/output/
 sft/test_output/
+sft/financial_output/
 sft/merged_model/
 sft/quick_merged_model/
 sft/full_merged_model/
+sft/financial_merged_model/
+# Generic patterns
 */checkpoints/
 */checkpoint-*/
 */lora_adapters/

@@ -58,7 +58,9 @@ def convert_existing_dataset(input_path: str, output_path: str):
                     continue
                 
                 # Extract answer/output
-                if "answer" in item:
+                if "optimized_answer" in item:
+                    output = item["optimized_answer"]
+                elif "answer" in item:
                     output = item["answer"]
                 elif "output" in item:
                     output = item["output"]

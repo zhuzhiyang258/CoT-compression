@@ -1,10 +1,10 @@
-# LoRA Fine-tuning Configuration for Qwen3-4B-Chat
+# Financial Domain Training Configuration for Qwen3-4B-Chat
 
 # Model Configuration
 model_name_or_path: "./models/Qwen3-4B-Chat"
 model_revision: null
 torch_dtype: "bfloat16"
-attn_implementation: "flash_attention_2"
+attn_implementation: "eager"
 
 # LoRA Configuration
 use_lora: true
@@ -25,45 +25,45 @@ dataset_name: null
 dataset_dir: "./sft/data"
 template: "qwen"
 cutoff_len: 4096
-preprocessing_num_workers: 16
+preprocessing_num_workers: 8
 
 # Training Arguments
-output_dir: "./sft/outputs/training/default"
+output_dir: "./sft/outputs/training/financial"
 overwrite_output_dir: true
 do_train: true
 do_eval: false
 do_predict: false
 
-# Training Hyperparameters
+# Training Hyperparameters - Optimized for financial domain
 num_train_epochs: 3
-per_device_train_batch_size: 2
-per_device_eval_batch_size: 2
-gradient_accumulation_steps: 8
-learning_rate: 5.0e-5
+per_device_train_batch_size: 1
+per_device_eval_batch_size: 1
+gradient_accumulation_steps: 4
+learning_rate: 2.0e-5  # Lower learning rate for financial domain
 weight_decay: 0.01
 lr_scheduler_type: "cosine"
-warmup_ratio: 0.03
+warmup_ratio: 0.05
 fp16: false
 bf16: true
 
 # Optimization
-gradient_checkpointing: true
+gradient_checkpointing: false  # Disabled to avoid gradient issues
 dataloader_pin_memory: true
 remove_unused_columns: false
 optim: "adamw_torch"
 group_by_length: true
 
 # Logging and Evaluation
-logging_steps: 10
-save_strategy: "epoch"
-save_steps: 500
+logging_steps: 5
+save_strategy: "steps"
+save_steps: 25  # Save every 25 steps
 evaluation_strategy: "no"
 save_total_limit: 3
 seed: 42
 
 # Generation Config (for inference)
 do_sample: true
-temperature: 0.3
+temperature: 0.1  # Lower temperature for financial accuracy
 top_p: 0.9
 top_k: 50
 max_new_tokens: 1024
@@ -79,3 +79,6 @@ lora_bias: "none"
 use_rslora: false
 use_dora: false
 pissa_init: false
+
+# Training target - use financial dataset
+max_steps: 100  # Train for 100 steps on financial data
